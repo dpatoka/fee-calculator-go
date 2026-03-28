@@ -1,6 +1,9 @@
 package domain
 
-import "math"
+import (
+	"fee-calculator-go/internal/pricing/domain/errors"
+	"math"
+)
 
 type BreakpointRange struct {
 	lowerBreakpoint breakpoint
@@ -11,20 +14,35 @@ func NewBreakpointRange(lowerBreakpoint breakpoint, upperBreakpoint breakpoint) 
 	return &BreakpointRange{lowerBreakpoint, upperBreakpoint}
 }
 
-func (b *BreakpointRange) CalculateFee(requestedAmount float64) float64 {
-	// TODO validateAmount
+func (b *BreakpointRange) CalculateFee(requestedAmount float64) (float64, error) {
+	err := b.validateAmount(requestedAmount)
+	if err != nil {
+		return 0, err
+	}
 
 	if requestedAmount == b.lowerBreakpoint.amount {
-		return b.lowerBreakpoint.fee
+		return b.lowerBreakpoint.fee, nil
 	}
 
 	if requestedAmount == b.upperBreakpoint.amount {
-		return b.upperBreakpoint.fee
+		return b.upperBreakpoint.fee, nil
 	}
 
 	interpolatedFee := b.interpolateFee(requestedAmount)
 
-	return b.roundUpToDivisibleByFive(requestedAmount, interpolatedFee)
+	return b.roundUpToDivisibleByFive(requestedAmount, interpolatedFee), nil
+}
+
+func (b *BreakpointRange) validateAmount(amount float64) error {
+	if amount < b.lowerBreakpoint.amount {
+		return errors.ErrorAmountBelowLowerBoundary(amount, b.lowerBreakpoint.amount)
+	}
+
+	if amount > b.upperBreakpoint.amount {
+		return errors.ErrorAmountAboveLowerBoundary(amount, b.upperBreakpoint.amount)
+	}
+
+	return nil
 }
 
 func (b *BreakpointRange) interpolateFee(requestedAmount float64) float64 {
