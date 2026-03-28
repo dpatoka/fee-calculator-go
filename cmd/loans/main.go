@@ -24,7 +24,10 @@ func main() {
 	}
 
 	command := cli.NewFeeCalculationCommand()
-	result := command.Execute(*amountFlag, *durationFlag)
+	result, err := command.Execute(*amountFlag, *durationFlag)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println(result)
 }

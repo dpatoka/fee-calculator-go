@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fee-calculator-go/internal/pricing/application/query"
+	"fee-calculator-go/internal/pricing/infrastructure/domain/repository"
 	"fmt"
 )
 
@@ -10,14 +11,22 @@ type FeeCalculationCommand struct {
 }
 
 func NewFeeCalculationCommand() *FeeCalculationCommand {
+	queryHandler := query.NewFeeCalculationQueryHandler(
+		&repository.InMemoryBreakpointRepository{},
+	)
+
 	return &FeeCalculationCommand{
-		&query.FeeCalculationQueryHandler{},
+		queryHandler,
 	}
 }
 
-func (f *FeeCalculationCommand) Execute(amount float64, term int) string {
+func (f *FeeCalculationCommand) Execute(amount float64, term int) (string, error) {
 	q := query.FeeCalculationQuery{amount, term}
-	result := f.queryHandler.Run(q)
+	result, err := f.queryHandler.Run(q)
 
-	return fmt.Sprintf("%f", result)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%f", result), nil
 }

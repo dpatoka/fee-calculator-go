@@ -16,8 +16,8 @@ type testCases struct {
 
 func TestCalculateFeeWithSuccess(t *testing.T) {
 	tests := []testCases{
-		{19.25000, 12, " 385.000000", "fee not rounded up, loan + fee already divisible by 5"},
-		{11.50000, 24, " 460.00", " fee not rounded up, loan + fee already divisible by 5"},
+		{19.25000, 12, "385.000000", "fee not rounded up, loan + fee already divisible by 5"},
+		{11.50000, 24, "460.000000", " fee not rounded up, loan + fee already divisible by 5"},
 	}
 
 	command := cli.NewFeeCalculationCommand()
@@ -26,8 +26,10 @@ func TestCalculateFeeWithSuccess(t *testing.T) {
 		test := test
 
 		t.Run(test.description, func(t *testing.T) {
-			got := command.Execute(test.amount, test.term)
+			got, _ := command.Execute(test.amount, test.term)
 			assert.Equal(t, test.want, got)
 		})
 	}
 }
+
+// TODO test with handling error
