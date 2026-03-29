@@ -89,8 +89,5 @@ func TestErrorHandling(t *testing.T) {
 }
 
 func getBreakPointRange(test testCase) *BreakpointRange {
-	return NewBreakpointRange(
-		breakpoint{test.lowerAmount, test.lowerFee},
-		breakpoint{test.upperAmount, test.upperFee},
-	)
+	return NewBreakpointRange(test.lowerAmount, test.lowerFee, test.upperAmount, test.upperFee)
 }

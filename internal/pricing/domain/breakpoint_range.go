@@ -10,8 +10,11 @@ type BreakpointRange struct {
 	upperBreakpoint breakpoint
 }
 
-func NewBreakpointRange(lowerBreakpoint breakpoint, upperBreakpoint breakpoint) *BreakpointRange {
-	return &BreakpointRange{lowerBreakpoint, upperBreakpoint}
+func NewBreakpointRange(lowerAmount, lowerFee, upperAmount, upperFee float64) *BreakpointRange {
+	return &BreakpointRange{
+		breakpoint{lowerAmount, lowerFee},
+		breakpoint{upperAmount, upperFee},
+	}
 }
 
 func (b *BreakpointRange) CalculateFee(requestedAmount float64) (float64, error) {

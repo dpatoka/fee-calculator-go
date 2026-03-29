@@ -10,7 +10,7 @@ type AmountOutOfRangeError struct {
 
 func (e *AmountOutOfRangeError) Error() string {
 	return fmt.Sprintf(
-		"requested amount %.2f is % boundary %.2f",
+		"requested amount %.2f is %s boundary %.2f",
 		e.RequestedAmount, e.Direction, e.Boundary,
 	)
 }

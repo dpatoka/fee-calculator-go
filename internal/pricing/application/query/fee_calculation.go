@@ -23,5 +23,10 @@ func (f *FeeCalculationQueryHandler) Run(query FeeCalculationQuery) (float64, er
 		return 0, err
 	}
 
-	return breakpoint.CalculateFee(query.Amount), nil
+	fee, err := breakpoint.CalculateFee(query.Amount)
+	if err != nil {
+		return 0, err
+	}
+
+	return fee, nil
 }
