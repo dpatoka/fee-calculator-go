@@ -7,7 +7,7 @@ import (
 	"gotest.tools/assert"
 )
 
-type testCases struct {
+type testCase struct {
 	amount      float64
 	term        int
 	want        string
@@ -15,9 +15,11 @@ type testCases struct {
 }
 
 func TestCalculateFeeWithSuccess(t *testing.T) {
-	tests := []testCases{
-		{19.25000, 12, "385.000000", "fee not rounded up, loan + fee already divisible by 5"},
-		{11.50000, 24, "460.000000", " fee not rounded up, loan + fee already divisible by 5"},
+	tests := []testCase{
+		{19250.00, 12, "385.00", "fee not rounded up, loan + fee already divisible by 5"},
+		{11500.00, 24, "460.00", "fee not rounded up, loan + fee already divisible by 5"},
+		{1123.00, 12, "57.00", "fee rounded up to make loan + fee divisible by 5"},
+		{2567.00, 24, "113.00", "fee rounded up to make loan + fee divisible by 5"},
 	}
 
 	command := cli.NewFeeCalculationCommand()
@@ -31,5 +33,3 @@ func TestCalculateFeeWithSuccess(t *testing.T) {
 		})
 	}
 }
-
-// TODO test with handling error

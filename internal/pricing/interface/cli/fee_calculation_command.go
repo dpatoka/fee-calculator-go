@@ -28,5 +28,5 @@ func (f *FeeCalculationCommand) Execute(amount float64, term int) (string, error
 		return "", err
 	}
 
-	return fmt.Sprintf("%f", result), nil
+	return fmt.Sprintf("%.2f", result), nil
 }

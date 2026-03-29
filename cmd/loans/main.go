@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	amountFlag   = flag.Float64("amount", 0, "Amount of money to lend")
-	durationFlag = flag.Int("duration", 0, "Duration period for lending money")
+	amountFlag = flag.Float64("amount", 0, "Amount of money to lend")
+	termFlag   = flag.Int("term", 0, "Term period for lending money")
 )
 
 func main() {
@@ -19,12 +19,12 @@ func main() {
 		log.Fatal("Amount must be above 0")
 	}
 
-	if *durationFlag <= 0 {
-		log.Fatal("Duration can be 12 or 24")
+	if *termFlag <= 0 {
+		log.Fatal("Term can be 12 or 24")
 	}
 
 	command := cli.NewFeeCalculationCommand()
-	result, err := command.Execute(*amountFlag, *durationFlag)
+	result, err := command.Execute(*amountFlag, *termFlag)
 	if err != nil {
 		log.Fatal(err)
 	}
