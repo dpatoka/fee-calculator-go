@@ -23,7 +23,7 @@ func ErrorAmountBelowLowerBoundary(requested, lower float64) *AmountOutOfRangeEr
 	}
 }
 
-func ErrorAmountAboveLowerBoundary(requested, upper float64) *AmountOutOfRangeError {
+func ErrorAmountAboveUpperBoundary(requested, upper float64) *AmountOutOfRangeError {
 	return &AmountOutOfRangeError{
 		requested,
 		upper,

@@ -42,7 +42,7 @@ func (b *BreakpointRange) validateAmount(amount float64) error {
 	}
 
 	if amount > b.upperBreakpoint.amount {
-		return errors.ErrorAmountAboveLowerBoundary(amount, b.upperBreakpoint.amount)
+		return errors.ErrorAmountAboveUpperBoundary(amount, b.upperBreakpoint.amount)
 	}
 
 	return nil

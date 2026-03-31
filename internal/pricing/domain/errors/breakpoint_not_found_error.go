@@ -2,32 +2,32 @@ package errors
 
 import "fmt"
 
-type BreakpointNotFountError struct {
+type BreakpointNotFoundError struct {
 	amount float64
 	msg    string
 }
 
-func NewLowerBreakpointNotFountError(amount float64) *BreakpointNotFountError {
-	return &BreakpointNotFountError{
+func NewLowerBreakpointNotFoundError(amount float64) *BreakpointNotFoundError {
+	return &BreakpointNotFoundError{
 		amount,
 		fmt.Sprintf("lower breakpoint not found for amount %.2f", amount),
 	}
 }
 
-func NewUpperBreakpointNotFountError(amount float64) *BreakpointNotFountError {
-	return &BreakpointNotFountError{
+func NewUpperBreakpointNotFoundError(amount float64) *BreakpointNotFoundError {
+	return &BreakpointNotFoundError{
 		amount,
 		fmt.Sprintf("upper breakpoint not found for amount %.2f", amount),
 	}
 }
 
-func NewNotBreakpointsError() *BreakpointNotFountError {
-	return &BreakpointNotFountError{
+func NewNotBreakpointsError() *BreakpointNotFoundError {
+	return &BreakpointNotFoundError{
 		0,
 		fmt.Sprintf("Breakpoint repository is empty"),
 	}
 }
 
-func (e *BreakpointNotFountError) Error() string {
+func (e *BreakpointNotFoundError) Error() string {
 	return e.msg
 }
