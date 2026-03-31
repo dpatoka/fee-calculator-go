@@ -63,22 +63,22 @@ type breakpoint struct {
 }
 
 func (r *InMemoryBreakpointRepository) GetForTermAndAmount(term int, amount float64) (*domain.BreakpointRange, error) {
-	breakpoints, err := r.getTermBreakpoints(term)
+	breakpoints, err := getTermBreakpoints(term)
 	if err != nil {
 		return nil, err
 	}
 
-	err2 := r.validateAmountBounds(amount, breakpoints)
-	if err2 != nil {
-		return nil, err2
-	}
-
-	lowerBreakpoint, err := r.findLowerBreakpoint(amount, breakpoints)
+	err = validateAmountBounds(amount, breakpoints)
 	if err != nil {
 		return nil, err
 	}
 
-	upperBreakpoint, err := r.findUpperBreakpoint(amount, breakpoints)
+	lowerBreakpoint, err := findLowerBreakpoint(amount, breakpoints)
+	if err != nil {
+		return nil, err
+	}
+
+	upperBreakpoint, err := findUpperBreakpoint(amount, breakpoints)
 	if err != nil {
 		return nil, err
 	}
@@ -91,16 +91,16 @@ func (r *InMemoryBreakpointRepository) GetForTermAndAmount(term int, amount floa
 	), nil
 }
 
-func (r *InMemoryBreakpointRepository) getTermBreakpoints(term int) (map[float64]float64, error) {
+func getTermBreakpoints(term int) (map[float64]float64, error) {
 	result, exists := breakpoints[term]
-	if exists != true {
+	if !exists {
 		return nil, errors.NewUnsupportedTermError(term)
 	}
 
 	return result, nil
 }
 
-func (r *InMemoryBreakpointRepository) validateAmountBounds(amount float64, termBreakpoints map[float64]float64) error {
+func validateAmountBounds(amount float64, termBreakpoints map[float64]float64) error {
 	allAmounts := slices.Collect(maps.Keys(termBreakpoints))
 	minAmount := slices.Min(allAmounts)
 	maxAmount := slices.Max(allAmounts)
@@ -116,11 +116,11 @@ func (r *InMemoryBreakpointRepository) validateAmountBounds(amount float64, term
 	return nil
 }
 
-func (r *InMemoryBreakpointRepository) findLowerBreakpoint(amount float64, breakpoints map[float64]float64) (*breakpoint, error) {
+func findLowerBreakpoint(amount float64, breakpoints map[float64]float64) (*breakpoint, error) {
 	filter := func(breakpointAmount float64) bool {
 		return breakpointAmount > amount
 	}
-	validAmounts := r.filterAmountsFrom(breakpoints, filter)
+	validAmounts := filterAmountsFrom(breakpoints, filter)
 
 	if len(validAmounts) == 0 {
 		return nil, errors.NewLowerBreakpointNotFoundError(amount)
@@ -128,27 +128,27 @@ func (r *InMemoryBreakpointRepository) findLowerBreakpoint(amount float64, break
 
 	lowerAmount := slices.Max(validAmounts)
 	fee, ok := breakpoints[lowerAmount]
-	if ok != true {
+	if !ok {
 		return nil, errors.NewLowerBreakpointNotFoundError(lowerAmount)
 	}
 
 	return &breakpoint{lowerAmount, fee}, nil
 }
 
-func (r *InMemoryBreakpointRepository) findUpperBreakpoint(amount float64, breakpoints map[float64]float64) (*breakpoint, error) {
+func findUpperBreakpoint(amount float64, breakpoints map[float64]float64) (*breakpoint, error) {
 	filter := func(breakpointAmount float64) bool {
 		return breakpointAmount <= amount
 	}
-	validAmounts := r.filterAmountsFrom(breakpoints, filter)
+	validAmounts := filterAmountsFrom(breakpoints, filter)
 
 	if len(validAmounts) == 0 {
-		return r.getBreakpointForMaxAmount(breakpoints)
+		return getBreakpointForMaxAmount(breakpoints)
 	}
 
-	return r.getBreakpointForUpperAmount(validAmounts, breakpoints)
+	return getBreakpointForUpperAmount(validAmounts, breakpoints)
 }
 
-func (r *InMemoryBreakpointRepository) filterAmountsFrom(breakpoints map[float64]float64, filter func(amount float64) bool) []float64 {
+func filterAmountsFrom(breakpoints map[float64]float64, filter func(amount float64) bool) []float64 {
 	amounts := slices.Collect(maps.Keys(breakpoints))
 	validAmounts := slices.DeleteFunc(
 		amounts,
@@ -158,7 +158,7 @@ func (r *InMemoryBreakpointRepository) filterAmountsFrom(breakpoints map[float64
 	return validAmounts
 }
 
-func (r *InMemoryBreakpointRepository) getBreakpointForMaxAmount(breakpoints map[float64]float64) (*breakpoint, error) {
+func getBreakpointForMaxAmount(breakpoints map[float64]float64) (*breakpoint, error) {
 	allAmounts := slices.Collect(maps.Keys(breakpoints))
 	if len(allAmounts) == 0 {
 		return nil, errors.NewNotBreakpointsError()
@@ -166,17 +166,17 @@ func (r *InMemoryBreakpointRepository) getBreakpointForMaxAmount(breakpoints map
 
 	upperAmount := slices.Max(allAmounts)
 	fee, ok := breakpoints[upperAmount]
-	if ok != true {
+	if !ok {
 		return nil, errors.NewUpperBreakpointNotFoundError(upperAmount)
 	}
 
 	return &breakpoint{upperAmount, fee}, nil
 }
 
-func (r *InMemoryBreakpointRepository) getBreakpointForUpperAmount(validAmounts []float64, breakpoints map[float64]float64) (*breakpoint, error) {
+func getBreakpointForUpperAmount(validAmounts []float64, breakpoints map[float64]float64) (*breakpoint, error) {
 	upperAmount := slices.Min(validAmounts)
 	fee, ok := breakpoints[upperAmount]
-	if ok != true {
+	if !ok {
 		return nil, errors.NewUpperBreakpointNotFoundError(upperAmount)
 	}
 

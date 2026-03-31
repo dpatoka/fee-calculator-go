@@ -15,7 +15,7 @@ func (e *AmountOutOfRangeError) Error() string {
 	)
 }
 
-func ErrorAmountBelowLowerBoundary(requested, lower float64) *AmountOutOfRangeError {
+func ErrorAmountBelowLowerBoundary(requested, lower float64) error {
 	return &AmountOutOfRangeError{
 		requested,
 		lower,
@@ -23,7 +23,7 @@ func ErrorAmountBelowLowerBoundary(requested, lower float64) *AmountOutOfRangeEr
 	}
 }
 
-func ErrorAmountAboveUpperBoundary(requested, upper float64) *AmountOutOfRangeError {
+func ErrorAmountAboveUpperBoundary(requested, upper float64) error {
 	return &AmountOutOfRangeError{
 		requested,
 		upper,

@@ -24,8 +24,6 @@ func TestInvalidInputReturnsError(t *testing.T) {
 	}
 
 	for _, test := range cases {
-		test := test
-
 		t.Run(test.description, func(t *testing.T) {
 			cmd := exec.Command(
 				"go", "run", "main.go",

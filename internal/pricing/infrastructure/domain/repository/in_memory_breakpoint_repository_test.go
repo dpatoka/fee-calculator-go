@@ -46,8 +46,6 @@ func TestForCorrectValues(t *testing.T) {
 
 	repo := InMemoryBreakpointRepository{}
 	for _, test := range tests {
-		test := test
-
 		t.Run(test.name, func(t *testing.T) {
 			got, _ := repo.GetForTermAndAmount(test.term, test.requestedAmount)
 
@@ -96,8 +94,6 @@ func TestForInCorrectValues(t *testing.T) {
 
 	repo := InMemoryBreakpointRepository{}
 	for _, test := range tests {
-		test := test
-
 		t.Run(test.name, func(t *testing.T) {
 			got, err := repo.GetForTermAndAmount(test.term, test.requestedAmount)
 

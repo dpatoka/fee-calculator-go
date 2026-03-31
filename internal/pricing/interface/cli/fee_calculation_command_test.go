@@ -25,8 +25,6 @@ func TestCalculateFeeWithSuccess(t *testing.T) {
 	command := cli.NewFeeCalculationCommand()
 
 	for _, test := range tests {
-		test := test
-
 		t.Run(test.description, func(t *testing.T) {
 			got, _ := command.Execute(test.amount, test.term)
 			assert.Equal(t, test.want, got)

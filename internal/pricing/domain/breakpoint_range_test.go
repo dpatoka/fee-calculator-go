@@ -25,8 +25,6 @@ func TestBoundaries(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test := test
-
 		t.Run(test.name, func(t *testing.T) {
 			breakpointRange := getBreakPointRange(test)
 			got, _ := breakpointRange.CalculateFee(test.requestedAmount)
@@ -44,8 +42,6 @@ func TestInterpolationWithoutRounding(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test := test
-
 		t.Run(test.name, func(t *testing.T) {
 			breakpointRange := getBreakPointRange(test)
 			got, _ := breakpointRange.CalculateFee(test.requestedAmount)
@@ -61,8 +57,6 @@ func TestInterpolationWithRounding(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test := test
-
 		t.Run(test.name, func(t *testing.T) {
 			breakpointRange := getBreakPointRange(test)
 			got, _ := breakpointRange.CalculateFee(test.requestedAmount)
@@ -78,8 +72,6 @@ func TestErrorHandling(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		test := test
-
 		t.Run(test.name, func(t *testing.T) {
 			breakpointRange := getBreakPointRange(test)
 			got, _ := breakpointRange.CalculateFee(test.requestedAmount)
