@@ -116,14 +116,14 @@ func (r *InMemoryBreakpointRepository) validateAmountBounds(amount float64, term
 	return nil
 }
 
-func (r *InMemoryBreakpointRepository) findLowerBreakpoint(requiredAmount float64, breakpoints map[float64]float64) (*breakpoint, error) {
-	filter := func(amount float64) bool {
-		return amount > requiredAmount
+func (r *InMemoryBreakpointRepository) findLowerBreakpoint(amount float64, breakpoints map[float64]float64) (*breakpoint, error) {
+	filter := func(breakpointAmount float64) bool {
+		return breakpointAmount > amount
 	}
 	validAmounts := r.filterAmountsFrom(breakpoints, filter)
 
 	if len(validAmounts) == 0 {
-		return nil, errors.NewLowerBreakpointNotFountError(requiredAmount)
+		return nil, errors.NewLowerBreakpointNotFountError(amount)
 	}
 
 	lowerAmount := slices.Max(validAmounts)
@@ -135,9 +135,9 @@ func (r *InMemoryBreakpointRepository) findLowerBreakpoint(requiredAmount float6
 	return &breakpoint{lowerAmount, fee}, nil
 }
 
-func (r *InMemoryBreakpointRepository) findUpperBreakpoint(requiredAmount float64, breakpoints map[float64]float64) (*breakpoint, error) {
-	filter := func(amount float64) bool {
-		return amount <= requiredAmount
+func (r *InMemoryBreakpointRepository) findUpperBreakpoint(amount float64, breakpoints map[float64]float64) (*breakpoint, error) {
+	filter := func(breakpointAmount float64) bool {
+		return breakpointAmount <= amount
 	}
 	validAmounts := r.filterAmountsFrom(breakpoints, filter)
 
