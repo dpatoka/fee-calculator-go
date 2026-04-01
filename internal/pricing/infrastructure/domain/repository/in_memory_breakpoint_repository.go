@@ -117,10 +117,14 @@ func validateAmountBounds(amount float64, termBreakpoints map[float64]float64) e
 }
 
 func findLowerBreakpoint(amount float64, breakpoints map[float64]float64) (*breakpoint, error) {
-	filter := func(breakpointAmount float64) bool {
-		return breakpointAmount > amount
+	amounts := slices.Collect(maps.Keys(breakpoints))
+
+	var validAmounts []float64
+	for _, breakpointAmount := range amounts {
+		if breakpointAmount <= amount {
+			validAmounts = append(validAmounts, breakpointAmount)
+		}
 	}
-	validAmounts := filterAmountsFrom(breakpoints, filter)
 
 	if len(validAmounts) == 0 {
 		return nil, errors.NewLowerBreakpointNotFoundError(amount)
@@ -136,26 +140,20 @@ func findLowerBreakpoint(amount float64, breakpoints map[float64]float64) (*brea
 }
 
 func findUpperBreakpoint(amount float64, breakpoints map[float64]float64) (*breakpoint, error) {
-	filter := func(breakpointAmount float64) bool {
-		return breakpointAmount <= amount
+	amounts := slices.Collect(maps.Keys(breakpoints))
+
+	var validAmounts []float64
+	for _, breakpointAmount := range amounts {
+		if breakpointAmount > amount {
+			validAmounts = append(validAmounts, breakpointAmount)
+		}
 	}
-	validAmounts := filterAmountsFrom(breakpoints, filter)
 
 	if len(validAmounts) == 0 {
 		return getBreakpointForMaxAmount(breakpoints)
 	}
 
 	return getBreakpointForUpperAmount(validAmounts, breakpoints)
-}
-
-func filterAmountsFrom(breakpoints map[float64]float64, filter func(amount float64) bool) []float64 {
-	amounts := slices.Collect(maps.Keys(breakpoints))
-	validAmounts := slices.DeleteFunc(
-		amounts,
-		filter,
-	)
-
-	return validAmounts
 }
 
 func getBreakpointForMaxAmount(breakpoints map[float64]float64) (*breakpoint, error) {
