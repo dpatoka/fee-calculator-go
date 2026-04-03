@@ -21,10 +21,10 @@ func NewUpperBreakpointNotFoundError(amount float64) error {
 	}
 }
 
-func NewNotBreakpointsError() error {
+func NewNoBreakpointsError() error {
 	return &BreakpointNotFoundError{
 		0,
-		fmt.Sprintf("Breakpoint repository is empty"),
+		"Breakpoint repository is empty",
 	}
 }
 

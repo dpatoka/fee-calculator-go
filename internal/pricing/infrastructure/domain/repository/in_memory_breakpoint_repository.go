@@ -7,7 +7,7 @@ import (
 	"slices"
 )
 
-var breakpoints = map[int]map[float64]float64{
+var breakpointData = map[int]map[float64]float64{
 	12: {
 		1000.0:  50.0,
 		2000.0:  90.0,
@@ -92,7 +92,7 @@ func (r *InMemoryBreakpointRepository) GetForTermAndAmount(term int, amount floa
 }
 
 func getTermBreakpoints(term int) (map[float64]float64, error) {
-	result, exists := breakpoints[term]
+	result, exists := breakpointData[term]
 	if !exists {
 		return nil, errors.NewUnsupportedTermError(term)
 	}
@@ -159,7 +159,7 @@ func findUpperBreakpoint(amount float64, breakpoints map[float64]float64) (*brea
 func getBreakpointForMaxAmount(breakpoints map[float64]float64) (*breakpoint, error) {
 	allAmounts := slices.Collect(maps.Keys(breakpoints))
 	if len(allAmounts) == 0 {
-		return nil, errors.NewNotBreakpointsError()
+		return nil, errors.NewNoBreakpointsError()
 	}
 
 	upperAmount := slices.Max(allAmounts)

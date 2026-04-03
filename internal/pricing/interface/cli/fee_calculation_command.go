@@ -21,7 +21,7 @@ func NewFeeCalculationCommand() *FeeCalculationCommand {
 }
 
 func (f *FeeCalculationCommand) Execute(amount float64, term int) (string, error) {
-	q := query.FeeCalculationQuery{amount, term}
+	q := query.FeeCalculationQuery{Amount: amount, Term: term}
 	result, err := f.queryHandler.Run(q)
 
 	if err != nil {
