@@ -3,10 +3,10 @@ package repository
 import (
 	"fee-calculator-go/internal/pricing/domain"
 	"fee-calculator-go/internal/pricing/domain/errors"
-	"reflect"
 	"testing"
 
-	testify "github.com/stretchr/testify/assert"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"gotest.tools/assert"
 )
 
@@ -49,11 +49,11 @@ func TestForCorrectValues(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			got, _ := repo.GetForTermAndAmount(test.term, test.requestedAmount)
 
-			expectedType := reflect.TypeOf(&domain.BreakpointRange{})
-			actualType := reflect.TypeOf(got)
-			assert.Equal(t, expectedType, actualType)
-
-			testify.Equal(t, test.expectedBreakpoint, got)
+			assert.DeepEqual(t, test.expectedBreakpoint, got,
+				cmp.Comparer(func(a, b domain.BreakpointRange) bool {
+					return cmp.Equal(a, b, cmpopts.EquateComparable(domain.BreakpointRange{}))
+				}),
+			)
 		})
 	}
 }
